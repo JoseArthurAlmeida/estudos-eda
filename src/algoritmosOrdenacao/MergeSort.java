@@ -7,15 +7,19 @@ public class MergeSort {
     public static void main(String[] args) {
         List<Integer> lista = new ArrayList<>(List.of(100, 90, 101, 10, 1, -999));
 
-        System.out.println(mergeSort(lista));
+        System.out.println("Lista NÃO ORDENADA: " + lista);
+
+        System.out.println("Lista ORDENADA: " + mergeSort(lista));
     }
 
     public static List<Integer> mergeSort(List<Integer> lista) {
         if (lista.size() <= 1) {
             return lista;
         }
-        List<Integer> listaAux1 = lista.subList(0, lista.size() / 2);
-        List<Integer> listaAux2 = lista.subList(lista.size() / 2, lista.size());
+
+        // Cria cópias da lista original
+        List<Integer> listaAux1 = new ArrayList<>(lista.subList(0, lista.size() / 2));
+        List<Integer> listaAux2 = new ArrayList<>(lista.subList(lista.size() / 2, lista.size()));
 
         listaAux1 = mergeSort(listaAux1);
         listaAux2 = mergeSort(listaAux2);
@@ -30,13 +34,14 @@ public class MergeSort {
         int ponteiroEsquerda = 0;
         int ponteiroDireita = 0;
 
+        // Enquanto houver elementos nas listas
         while (ponteiroEsquerda < listaEsquerda.size() && ponteiroDireita < listaDireita.size()) {
             if (listaEsquerda.get(ponteiroEsquerda) < listaDireita.get(ponteiroDireita)) {
                 listaMerged.add(listaEsquerda.get(ponteiroEsquerda));
-                ponteiroEsquerda++; // Avança o ponteiro.
+                ponteiroEsquerda++;
             } else {
                 listaMerged.add(listaDireita.get(ponteiroDireita));
-                ponteiroDireita++; // Avança o ponteiro.
+                ponteiroDireita++;
             }
         }
 
