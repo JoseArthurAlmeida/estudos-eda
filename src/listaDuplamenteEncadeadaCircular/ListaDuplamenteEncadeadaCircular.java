@@ -78,7 +78,7 @@ public class ListaDuplamenteEncadeadaCircular {
         NodoDEC atual = this.primeiro;
         int posicaoTemp = 1;
 
-        while (posicaoTemp < posicao) {
+        while (posicaoTemp < posicao - 1) {
             atual = atual.getProximo();
             posicaoTemp++;
         }
@@ -93,28 +93,79 @@ public class ListaDuplamenteEncadeadaCircular {
         return true;
     }
 
-    public NodoDEC get(int posicao){
+    public NodoDEC get(int posicao) {
         if (posicao < 1 || posicao > this.tamanho) {
             return null;
         }
 
-        if (posicao == 1){
+        // Se for o primeiro
+        if (posicao == 1) {
             return this.primeiro;
         }
-        if (posicao == this.tamanho){
+        // Se for o ultimo
+        if (posicao == this.tamanho) {
             return this.primeiro.getAnterior();
         }
 
+        // Qualquer oytra posição
         NodoDEC atual = this.primeiro;
         int posicaoTemp = 1;
-        while (posicaoTemp < posicao){
+        while (posicaoTemp < posicao) {
             atual = atual.getProximo();
             posicaoTemp++;
         }
         return atual;
     }
 
-    // TODO: public boolean remove(int posicao){}
+    public boolean remove(int posicao) {
+        if (posicao < 1 || posicao > this.tamanho || this.primeiro == null) {
+            return false;
+        }
+        // Existe só 1 Nodo
+        if (this.tamanho == 1) {
+            this.primeiro = null;
+            this.tamanho--;
+            return true;
+        }
+        // Se for o primeiro
+        if (posicao == 1) {
+            NodoDEC ultimo = this.primeiro.getAnterior();
+            NodoDEC novoPrimeiro = this.primeiro.getProximo();
+
+            // Atualiza os dois sentidos
+            ultimo.setProximo(novoPrimeiro);
+            novoPrimeiro.setAnterior(ultimo);
+
+            this.primeiro = novoPrimeiro;
+            this.tamanho--;
+            return true;
+        }
+
+        // Se for o ultimo
+        if (posicao == this.tamanho) {
+            NodoDEC ultimo = this.primeiro.getAnterior();
+            NodoDEC antecessorUltimo = ultimo.getAnterior();
+
+            antecessorUltimo.setProximo(this.primeiro);
+            this.primeiro.setAnterior(antecessorUltimo);
+            this.tamanho--;
+            return true;
+        }
+        // Qualquer oytra posição
+        NodoDEC atual = this.primeiro;
+        int posicaoTemp = 1;
+        while (posicaoTemp < posicao - 1) {
+            atual = atual.getProximo();
+            posicaoTemp++;
+        }
+        NodoDEC sucessorRemovido = atual.getProximo().getProximo();
+        atual.setProximo(sucessorRemovido);
+        sucessorRemovido.setAnterior(atual);
+
+        this.tamanho--;
+        return true;
+
+    }
 
     @Override
     public String toString() {
