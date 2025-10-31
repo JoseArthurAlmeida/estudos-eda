@@ -1,12 +1,11 @@
 package tabelaHashLinear;
 
 public class TabelaHash {
+    private static final double FATOR_DE_CARGA_LIMITE = 0.75;
+    private final Aluno ALUNO_DELETADO = new Aluno(-1, "DELETED");
     private int TAMANHO;
     private Aluno[] tabela;
     private int quantidade;
-
-    private static final double FATOR_DE_CARGA_LIMITE = 0.75;
-    private final Aluno ALUNO_DELETADO = new Aluno(-1, "DELETED");
 
     public TabelaHash(int tamanhoInicial) {
         this.TAMANHO = Math.max(tamanhoInicial, 1);
@@ -80,7 +79,30 @@ public class TabelaHash {
         return null;
     }
 
-    // TODO: public boolean removerValor(int matricula) {}
+    public boolean removerValor(int matricula) {
+        int indiceInicial = funcaoHash(matricula);
+        int indiceAtual = indiceInicial;
+
+        do {
+            // Se encontrarmos um espaço nulo, não há o que remover.
+            if (tabela[indiceAtual] == null) {
+                return false;
+            }
+
+            // Se encontrarmos o aluno, o marcamos como deletado.
+            if (tabela[indiceAtual] != ALUNO_DELETADO && tabela[indiceAtual].getMatricula() == matricula) {
+                tabela[indiceAtual] = ALUNO_DELETADO;
+                quantidade--;
+                return true;
+            }
+
+            indiceAtual = (indiceAtual + 1) % TAMANHO;
+
+        } while (indiceAtual != indiceInicial);
+
+        return false;
+    }
+
     public void imprimirTabela() {
         System.out.println("\n--- Tabela Hash (Tamanho: " + TAMANHO + ", Ocupação: " + quantidade + ") ---");
         for (int i = 0; i < TAMANHO; i++) {
