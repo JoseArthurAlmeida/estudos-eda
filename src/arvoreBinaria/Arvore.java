@@ -14,7 +14,6 @@ public class Arvore {
 
         if (this.raiz == null) {
             this.raiz = novoNo;
-            return;
         } else {
             No atual = this.raiz;
 
@@ -37,6 +36,29 @@ public class Arvore {
             }
         }
     }
+
+    /**
+     * Busca por um valor na árvore de forma iterativa.
+     * @param valor - O valor a ser procurado.
+     * @return {boolean} - True se o valor for encontrado, senão false.
+     */
+    public boolean buscar(int valor){
+        // Caso base: se a raiz for nula, o valor não está na árvore.
+        if (this.raiz == null) return false; // Se a árvore estiver vazia, retorna false.
+
+        // Inicia a busca a partir da raiz
+        No atual = this.raiz;
+        while (atual != null){
+            if (valor == atual.getValor()) return true;
+
+            // Se o valor for menor, navega para a subárvore esquerda. Se for maior, navega para a direita.
+            atual = valor < atual.getValor() ? atual.getEsquerda() : atual.getDireita();
+        }
+        // Se o nó atual se tornar nulo, o valor não foi encontrado.
+        return false;
+    }
+
+
     /**
      * Método público que inicia a exibição da árvore.
      */
