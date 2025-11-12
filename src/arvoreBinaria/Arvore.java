@@ -8,7 +8,19 @@ public class Arvore {
     public Arvore() {
         this.raiz = null;
     }
-
+    /**
+     * Insere um novo valor na árvore binária de pesquisa.
+     * <p>
+     * O método segue a propriedade fundamental de uma Árvore Binária de Pesquisa (BST):
+     * valores menores que um nó são inseridos em sua sub-árvore esquerda, e valores
+     * maiores são inseridos em sua sub-árvore direita.
+     * <p>
+     * Se a árvore estiver vazia, o novo valor se torna a raiz. O método percorre
+     * a árvore de forma iterativa para encontrar a posição correta para o novo nó,
+     * garantindo que a estrutura da BST seja mantida.
+     *
+     * @param valor o valor inteiro a ser adicionado à árvore.
+     */
     public void inserir(int valor) {
         No novoNo = new No(valor);
 
@@ -39,16 +51,17 @@ public class Arvore {
 
     /**
      * Busca por um valor na árvore de forma iterativa.
+     *
      * @param valor - O valor a ser procurado.
      * @return {boolean} - True se o valor for encontrado, senão false.
      */
-    public boolean buscar(int valor){
+    public boolean buscar(int valor) {
         // Caso base: se a raiz for nula, o valor não está na árvore.
         if (this.raiz == null) return false; // Se a árvore estiver vazia, retorna false.
 
         // Inicia a busca a partir da raiz
         No atual = this.raiz;
-        while (atual != null){
+        while (atual != null) {
             if (valor == atual.getValor()) return true;
 
             // Se o valor for menor, navega para a subárvore esquerda. Se for maior, navega para a direita.
@@ -56,6 +69,63 @@ public class Arvore {
         }
         // Se o nó atual se tornar nulo, o valor não foi encontrado.
         return false;
+    }
+
+    /**
+     * Método público que inicia o processo de remoção.
+     * Ele chama o método recursivo auxiliar começando pela raiz.
+     */
+    public void remover(int valor) {
+        // A chamada recursiva pode alterar a raiz, então precisamos reatribuí-la.
+        this.raiz = remover(this.raiz, valor);
+    }
+
+    private No remover(No noAtual, int valor) {
+        if (noAtual == null) {
+            return null;
+        }
+
+        // Passo 1: Busca pelo nó a ser removido.
+        if (valor < noAtual.getValor()) {
+            noAtual.setEsquerda(remover(noAtual.getEsquerda(), valor));
+        } else if (valor > noAtual.getValor()) {
+            noAtual.setDireita(remover(noAtual.getDireita(), valor));
+        } else {
+            // Encontramos o nó a ser removido (valor == noAtual.getValor()).
+            // Agora, tratamos os 3 casos.
+
+            // CASO 1: O nó é uma folha (não tem filhos).
+            if (noAtual.getEsquerda() == null && noAtual.getDireita() == null) {
+                return null;  // O pai deste nó receberá null, efetivamente removendo-o.
+            }
+            // CASO 2: O nó tem apenas um filho.
+            if (noAtual.getEsquerda() == null) {
+                return noAtual.getDireita(); // Retorna o filho direito para substituir o nó atual.
+            }
+            if (noAtual.getDireita() == null) {
+                return noAtual.getEsquerda(); // Retorna o filho esquerdo para substituir o nó atual.
+            }
+
+            // CASO 3: O nó tem dois filhos (o caso mais complexo).
+            // O sucessor é o menor valor na sub-árvore direita.
+            No sucessor = encontrarMenor(noAtual.getDireita());
+
+            // Copiamos o valor do sucessor para o nó que queremos "remover".
+            noAtual.setValor(sucessor.getValor()); // Assumindo que sua classe No tem um setValor()
+
+            // Agora, removemos o nó sucessor (que agora é um duplicado) da sub-árvore direita.
+            // O nó sucessor sempre se encaixará no Caso 1 ou Caso 2, pois ele não tem filho esquerdo.
+            noAtual.setDireita(remover(noAtual.getDireita(), sucessor.getValor()));
+        }
+        return noAtual;
+    }
+
+    private No encontrarMenor(No no) {
+        while (no.getEsquerda() != null) {
+            no = no.getEsquerda();
+        }
+
+        return no;
     }
 
 
@@ -91,11 +161,11 @@ public class Arvore {
     /**
      * Preenche recursivamente a tela com os nós e galhos da árvore.
      *
-     * @param no O nó atual.
-     * @param tela A matriz 2D que representa a tela.
-     * @param nivel O nível (profundidade) atual do nó.
+     * @param no       O nó atual.
+     * @param tela     A matriz 2D que representa a tela.
+     * @param nivel    O nível (profundidade) atual do nó.
      * @param esquerda O limite esquerdo do espaço disponível para esta sub-árvore.
-     * @param direita O limite direito do espaço disponível para esta sub-árvore.
+     * @param direita  O limite direito do espaço disponível para esta sub-árvore.
      */
     private void preencherTela(No no, char[][] tela, int nivel, int esquerda, int direita) {
         if (no == null) {
