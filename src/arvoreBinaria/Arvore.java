@@ -8,6 +8,7 @@ public class Arvore {
     public Arvore() {
         this.raiz = null;
     }
+
     /**
      * Insere um novo valor na árvore binária de pesquisa.
      * <p>
@@ -57,14 +58,17 @@ public class Arvore {
      */
     public boolean buscar(int valor) {
         // Caso base: se a raiz for nula, o valor não está na árvore.
-        if (this.raiz == null) return false; // Se a árvore estiver vazia, retorna false.
+        if (this.raiz == null)
+            return false; // Se a árvore estiver vazia, retorna false.
 
         // Inicia a busca a partir da raiz
         No atual = this.raiz;
         while (atual != null) {
-            if (valor == atual.getValor()) return true;
+            if (valor == atual.getValor())
+                return true;
 
-            // Se o valor for menor, navega para a subárvore esquerda. Se for maior, navega para a direita.
+            // Se o valor for menor, navega para a subárvore esquerda. Se for maior, navega
+            // para a direita.
             atual = valor < atual.getValor() ? atual.getEsquerda() : atual.getDireita();
         }
         // Se o nó atual se tornar nulo, o valor não foi encontrado.
@@ -96,7 +100,7 @@ public class Arvore {
 
             // CASO 1: O nó é uma folha (não tem filhos).
             if (noAtual.getEsquerda() == null && noAtual.getDireita() == null) {
-                return null;  // O pai deste nó receberá null, efetivamente removendo-o.
+                return null; // O pai deste nó receberá null, efetivamente removendo-o.
             }
             // CASO 2: O nó tem apenas um filho.
             if (noAtual.getEsquerda() == null) {
@@ -106,7 +110,7 @@ public class Arvore {
                 return noAtual.getEsquerda(); // Retorna o filho esquerdo para substituir o nó atual.
             }
 
-            // CASO 3: O nó tem dois filhos (o caso mais complexo).
+            // CASO 3: O nó tem dois filhos
             // O sucessor é o menor valor na sub-árvore direita.
             No sucessor = encontrarMenor(noAtual.getDireita());
 
@@ -120,6 +124,50 @@ public class Arvore {
         return noAtual;
     }
 
+    public void travessiaPreOrdem() {
+        travessiaPreOrdem(this.raiz);
+        System.out.println();
+    }
+
+    private void travessiaPreOrdem(No no) {
+        if (no == null) {
+            return;
+        }
+
+        System.out.print(no.getValor() + " ");
+        travessiaPreOrdem(no.getEsquerda());
+        travessiaPreOrdem(no.getDireita());
+    }
+
+    public void travessiaEmOrdem() {
+        travessiaEmOrdem(this.raiz);
+        System.out.println();
+    }
+
+    private void travessiaEmOrdem(No no) {
+        if (no == null) {
+            return;
+        }
+
+        travessiaEmOrdem(no.getEsquerda());
+        System.out.print(no.getValor() + " ");
+        travessiaEmOrdem(no.getDireita());
+    }
+
+    public void travessiaPosOrdem() {
+        travessiaPosOrdem(this.raiz);
+        System.out.println();
+    }
+
+    private void travessiaPosOrdem(No no) {
+        if (no == null) {
+            return;
+        }
+        travessiaPosOrdem(no.getEsquerda());
+        travessiaPosOrdem(no.getDireita());
+        System.out.print(no.getValor() + " ");
+    }
+
     private No encontrarMenor(No no) {
         while (no.getEsquerda() != null) {
             no = no.getEsquerda();
@@ -127,7 +175,6 @@ public class Arvore {
 
         return no;
     }
-
 
     /**
      * Método público que inicia a exibição da árvore.
