@@ -13,7 +13,7 @@ public class Main {
         System.out.println("--- INICIANDO TESTES DE INSERÇÃO---");
 
         // 1. Setup: Criação e população da árvore
-        Arvore arvore = new Arvore();
+        ArvoreAVL arvore = new ArvoreAVL();
         arvore.inserir(50);
         arvore.inserir(30);
         arvore.inserir(70);

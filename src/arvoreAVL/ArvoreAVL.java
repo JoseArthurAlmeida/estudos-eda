@@ -1,9 +1,9 @@
 package arvoreAVL;
 
-public class Arvore {
+public class ArvoreAVL {
     private No raiz;
 
-    public Arvore() {
+    public ArvoreAVL() {
         this.raiz = null;
     }
 
@@ -124,11 +124,28 @@ public class Arvore {
         return noAtual;
     }
 
+    /**
+     * Inicia a travessia Pré-Ordem (Pre-Order) a partir da raiz da árvore e imprime os valores
+     * dos nós no console.
+     * <p>
+     * A ordem de visitação é: <b>Raiz, Sub-árvore Esquerda, Sub-árvore Direita</b>.
+     * Este método é o ponto de entrada público que chama a implementação recursiva.
+     * Ao final da travessia, uma nova linha é impressa para formatação.
+     */
     public void travessiaPreOrdem() {
         travessiaPreOrdem(this.raiz);
         System.out.println();
     }
 
+    /**
+     * Método auxiliar recursivo que executa a travessia Pré-Ordem em uma dada sub-árvore.
+     * <p>
+     * Para cada nó visitado, o método primeiro imprime o valor do próprio nó, depois chama
+     * a si mesmo para a sub-árvore esquerda e, finalmente, para a sub-árvore direita.
+     * O caso base da recursão é um nó nulo, que interrompe o caminho.
+     *
+     * @param no O nó raiz da sub-árvore a ser percorrida.
+     */
     private void travessiaPreOrdem(No no) {
         if (no == null) {
             return;
@@ -139,11 +156,27 @@ public class Arvore {
         travessiaPreOrdem(no.getDireita());
     }
 
+    /**
+     * Inicia a travessia Em-Ordem (In-Order) a partir da raiz da árvore e imprime os valores
+     * dos nós no console.
+     * <p>
+     * A ordem de visitação é: <b>Sub-árvore Esquerda, Raiz, Sub-árvore Direita</b>.
+     * Para uma Árvore Binária de Pesquisa (BST), esta travessia resulta na impressão
+     * de todos os valores em <strong>ordem crescente</strong>.
+     */
     public void travessiaEmOrdem() {
         travessiaEmOrdem(this.raiz);
         System.out.println();
     }
 
+    /**
+     * Método auxiliar recursivo que executa a travessia Em-Ordem em uma dada sub-árvore.
+     * <p>
+     * O método primeiro chama a si mesmo para toda a sub-árvore esquerda. Ao retornar,
+     * imprime o valor do nó atual e, em seguida, chama a si mesmo para a sub-árvore direita.
+     *
+     * @param no O nó raiz da sub-árvore a ser percorrida.
+     */
     private void travessiaEmOrdem(No no) {
         if (no == null) {
             return;
@@ -154,11 +187,29 @@ public class Arvore {
         travessiaEmOrdem(no.getDireita());
     }
 
+    /**
+     * Inicia a travessia Pós-Ordem (Post-Order) a partir da raiz da árvore e imprime os valores
+     * dos nós no console.
+     * <p>
+     * A ordem de visitação é: <b>Sub-árvore Esquerda, Sub-árvore Direita, Raiz</b>.
+     * Esta travessia é particularmente útil para operações como a exclusão de todos os
+     * nós de uma árvore, pois garante que um nó pai seja processado apenas após todos os
+     * seus descendentes.
+     */
     public void travessiaPosOrdem() {
         travessiaPosOrdem(this.raiz);
         System.out.println();
     }
 
+    /**
+     * Método auxiliar recursivo que executa a travessia Pós-Ordem em uma dada sub-árvore.
+     * <p>
+     * O método chama recursivamente a si mesmo primeiro para a sub-árvore esquerda e depois
+     * para a sub-árvore direita. Somente após o retorno de ambas as chamadas, ele imprime
+     * o valor do nó atual.
+     *
+     * @param no O nó raiz da sub-árvore a ser percorrida.
+     */
     private void travessiaPosOrdem(No no) {
         if (no == null) {
             return;
@@ -168,6 +219,22 @@ public class Arvore {
         System.out.print(no.getValor() + " ");
     }
 
+    /**
+     * Método auxiliar para encontrar o nó com o menor valor em uma sub-árvore.
+     * <p>
+     * Em uma Árvore Binária de Pesquisa (BST), o menor valor de qualquer sub-árvore
+     * está sempre localizado no nó mais à esquerda. Este método explora essa
+     * propriedade de forma iterativa, começando no nó fornecido e navegando
+     * continuamente para o filho da esquerda até que não seja mais possível.
+     * <p>
+     * É uma função crucial para o "Caso 3" da operação de remoção, onde é
+     * utilizado para encontrar o <strong>sucessor</strong> de um nó que possui dois filhos.
+     *
+     * @param no O nó que serve como raiz da sub-árvore na qual a busca será realizada.
+     *           Normalmente, é o filho direito do nó que se deseja remover.
+     * @return O nó (o objeto {@code No} completo) que contém o menor valor
+     * encontrado na sub-árvore.
+     */
     private No encontrarMenor(No no) {
         while (no.getEsquerda() != null) {
             no = no.getEsquerda();
@@ -176,11 +243,10 @@ public class Arvore {
         return no;
     }
 
-
     /**
      * Calcula a altura de um nó.
-     * A altura de um nó é o número de arestas no maior caminho entre ele e uma folha.
-     * Um nó folha tem altura 0. Um nó nulo tem altura -1 (convenção comum).
+     * A altura de um nó é o número de arestas no MAIOR CAMINHO entre ele e uma folha.
+     * Um nó folha tem altura 0. Um nó nulo tem altura −1 (convenção comum).
      *
      * @param no O nó a partir do qual a altura será calculada.
      * @return A altura do nó.
@@ -212,7 +278,6 @@ public class Arvore {
         if (no == null) {
             return 0;
         }
-        // A fórmula exata dos seus slides: AE - AD
         return getAltura(no.getEsquerda()) - getAltura(no.getDireita());
     }
 
@@ -250,11 +315,11 @@ public class Arvore {
     /**
      * Preenche recursivamente a tela com os nós e galhos da árvore.
      *
-     * @param no O nó atual.
-     * @param tela A matriz 2D que representa a tela.
-     * @param nivel O nível (profundidade) atual do nó.
+     * @param no       O nó atual.
+     * @param tela     A matriz 2D que representa a tela.
+     * @param nivel    O nível (profundidade) atual do nó.
      * @param esquerda O limite esquerdo do espaço disponível para esta sub-árvore.
-     * @param direita O limite direito do espaço disponível para esta sub-árvore.
+     * @param direita  O limite direito do espaço disponível para esta sub-árvore.
      */
     private void preencherTela(No no, char[][] tela, int nivel, int esquerda, int direita) {
         if (no == null) {
@@ -286,7 +351,7 @@ public class Arvore {
                 // --- CORREÇÃO DE ALINHAMENTO ---
                 // O galho é posicionado na metade do caminho entre o centro do pai e o centro do filho
                 int posGalho = meioFilho + (meio - meioFilho) / 2;
-                if(posGalho < tela[linhaGalho].length) tela[linhaGalho][posGalho] = '/';
+                if (posGalho < tela[linhaGalho].length) tela[linhaGalho][posGalho] = '/';
                 preencherTela(no.getEsquerda(), tela, nivel + 1, esquerda, meio - 1);
             }
             // Galho para a direita
@@ -295,11 +360,10 @@ public class Arvore {
                 // --- CORREÇÃO DE ALINHAMENTO ---
                 // O galho é posicionado na metade do caminho entre o centro do pai e o centro do filho
                 int posGalho = meioFilho - (meioFilho - meio) / 2;
-                if(posGalho >= 0 && posGalho < tela[linhaGalho].length) tela[linhaGalho][posGalho] = '\\';
+                if (posGalho >= 0 && posGalho < tela[linhaGalho].length) tela[linhaGalho][posGalho] = '\\';
                 preencherTela(no.getDireita(), tela, nivel + 1, meio + 1, direita);
             }
         }
     }
-
 
 }
