@@ -34,6 +34,9 @@ public class ArvoreAVL {
                     if (atual.getEsquerda() == null) {
                         atual.setEsquerda(novoNo);
                         novoNo.setPai(atual);
+
+                        verificarBalanceamento(novoNo.getPai());
+
                         return;
                     }
                     atual = atual.getEsquerda();
@@ -42,6 +45,9 @@ public class ArvoreAVL {
                     if (atual.getDireita() == null) {
                         atual.setDireita(novoNo);
                         novoNo.setPai(atual);
+
+                        verificarBalanceamento(novoNo.getPai());
+
                         return;
                     }
                     atual = atual.getDireita();
@@ -104,9 +110,11 @@ public class ArvoreAVL {
             }
             // CASO 2: O nó tem apenas um filho.
             if (noAtual.getEsquerda() == null) {
+                noAtual.getDireita().setPai(noAtual.getPai());
                 return noAtual.getDireita(); // Retorna o filho direito para substituir o nó atual.
             }
             if (noAtual.getDireita() == null) {
+                noAtual.getEsquerda().setPai(noAtual.getPai());
                 return noAtual.getEsquerda(); // Retorna o filho esquerdo para substituir o nó atual.
             }
 
@@ -121,6 +129,7 @@ public class ArvoreAVL {
             // O nó sucessor sempre se encaixará no Caso 1 ou Caso 2, pois ele não tem filho esquerdo.
             noAtual.setDireita(remover(noAtual.getDireita(), sucessor.getValor()));
         }
+        verificarBalanceamento(noAtual);
         return noAtual;
     }
 
@@ -281,6 +290,128 @@ public class ArvoreAVL {
         return getAltura(no.getEsquerda()) - getAltura(no.getDireita());
     }
 
+    /**
+     * Rotação Simples à Direita.
+     * Usada quando o desbalanceamento é na esquerda-esquerda (FB do pai +2, FB do filho +1 ou 0).
+     *
+     * @param y O nó desbalanceado (pai).
+     * @return A nova raiz da sub-árvore após a rotação.
+     */
+    private No rotacaoDireita(No y) {
+        No x = y.getEsquerda();
+        No T2 = x.getDireita();
+
+        // Realiza a rotação
+        x.setDireita(y);
+        y.setEsquerda(T2);
+
+        // Ajusta os pais
+        if (T2 != null) {
+            T2.setPai(y);
+        }
+
+        // Ajusta o pai de x para ser o antigo pai de y
+        x.setPai(y.getPai());
+
+        // Se y era a raiz, x agora é a nova raiz
+        if (y.getPai() == null) {
+            this.raiz = x;
+        } else if (y == y.getPai().getDireita()) {
+            y.getPai().setDireita(x);
+        } else {
+            y.getPai().setEsquerda(x);
+        }
+
+        // O pai de y agora é x
+        y.setPai(x);
+
+        return x;
+    }
+
+    /**
+     * Rotação Simples à Esquerda.
+     * Usada quando o desbalanceamento é na direita-direita (FB do pai -2, FB do filho -1 ou 0).
+     *
+     * @param x O nó desbalanceado (pai).
+     * @return A nova raiz da sub-árvore após a rotação.
+     */
+    private No rotacaoEsquerda(No x) {
+        No y = x.getDireita();
+        No T2 = y.getEsquerda();
+
+        // Realiza a rotação
+        y.setEsquerda(x);
+        x.setDireita(T2);
+
+        // Ajusta os pais
+        if (T2 != null) {
+            T2.setPai(x);
+        }
+
+        // Ajusta o pai de y para ser o antigo pai de x
+        y.setPai(x.getPai());
+
+        // Se x era a raiz, y agora é a nova raiz
+        if (x.getPai() == null) {
+            this.raiz = y;
+        } else if (x == x.getPai().getEsquerda()) {
+            x.getPai().setEsquerda(y);
+        } else {
+            x.getPai().setDireita(y);
+        }
+
+        // O pai de x agora é y
+        x.setPai(y);
+
+        return y;
+    }
+
+    /**
+     * Sobe a árvore verificando o balanceamento de cada ancestral.
+     * Se encontrar um nó desbalanceado, aplica a rotação necessária.
+     *
+     * @param no O nó a partir do qual começamos a verificar (geralmente onde ocorreu a inserção/remoção).
+     */
+    private void verificarBalanceamento(No no) {
+        while (no != null) {
+            int fb = getFatorBalanceamento(no);
+
+            // Caso 1: Desbalanceado para a Esquerda (Pesado na esquerda)
+            if (fb > 1) {
+                // Verifica o sinal do filho da esquerda para saber se é Rotação Simples ou Dupla
+                // Se FB do filho ≥ 0: Sinais iguais (Positivo/Positivo) → Rotação Simples Direita
+                if (getFatorBalanceamento(no.getEsquerda()) >= 0) {
+                    no = rotacaoDireita(no);
+                }
+                // Se FB do filho < 0: Sinais diferentes (Positivo/Negativo) → Rotação Dupla Esquerda-Direita
+                else {
+                    // 1. Rotação à Esquerda no filho
+                    rotacaoEsquerda(no.getEsquerda());
+                    // 2. Rotação à Direita no pai
+                    no = rotacaoDireita(no);
+                }
+            }
+
+            // Caso 2: Desbalanceado para a Direita (Pesado na direita)
+            else if (fb < -1) {
+                // Verifica o sinal do filho da direita
+                // Se FB do filho ≤ 0: Sinais iguais (Negativo/Negativo) → Rotação Simples Esquerda
+                if (getFatorBalanceamento(no.getDireita()) <= 0) {
+                    no = rotacaoEsquerda(no);
+                }
+                // Se FB do filho > 0: Sinais diferentes (Negativo/Positivo) → Rotação Dupla Direita-Esquerda
+                else {
+                    // 1. Rotação à Direita no filho
+                    rotacaoDireita(no.getDireita());
+                    // 2. Rotação à Esquerda no pai
+                    no = rotacaoEsquerda(no);
+                }
+            }
+
+            // Continua subindo para verificar os ancestrais
+            no = no.getPai();
+        }
+    }
     /**
      * Método público que inicia a exibição da árvore.
      */
