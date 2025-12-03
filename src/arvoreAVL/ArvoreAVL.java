@@ -255,7 +255,7 @@ public class ArvoreAVL {
     /**
      * Calcula a altura de um nó.
      * A altura de um nó é o número de arestas no MAIOR CAMINHO entre ele e uma folha.
-     * Um nó folha tem altura 0. Um nó nulo tem altura −1 (convenção comum).
+     * Um nó folha tem altura 1. Um nó nulo tem altura 0.
      *
      * @param no O nó a partir do qual a altura será calculada.
      * @return A altura do nó.
@@ -263,7 +263,7 @@ public class ArvoreAVL {
     public int getAltura(No no) {
         // Caso base: se o nó for nulo, sua altura é -1.
         if (no == null) {
-            return -1;
+            return 0;
         }
 
         // A altura do nó é 1 + a altura da sua maior sub-árvore (esquerda ou direita).
@@ -376,7 +376,7 @@ public class ArvoreAVL {
         while (no != null) {
             int fb = getFatorBalanceamento(no);
 
-            // Caso 1: Desbalanceado para a Esquerda (Pesado na esquerda)
+            // Caso 1: Desbalanceado para a Esquerda
             if (fb > 1) {
                 // Verifica o sinal do filho da esquerda para saber se é Rotação Simples ou Dupla
                 // Se FB do filho ≥ 0: Sinais iguais (Positivo/Positivo) → Rotação Simples Direita
@@ -392,7 +392,7 @@ public class ArvoreAVL {
                 }
             }
 
-            // Caso 2: Desbalanceado para a Direita (Pesado na direita)
+            // Caso 2: Desbalanceado para a Direita
             else if (fb < -1) {
                 // Verifica o sinal do filho da direita
                 // Se FB do filho ≤ 0: Sinais iguais (Negativo/Negativo) → Rotação Simples Esquerda
