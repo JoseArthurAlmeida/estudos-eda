@@ -112,6 +112,34 @@ public class ArvoreB {
         pai.numChaves++;
     }
 
+    public boolean buscar(int valor) {
+        return buscarRecursivo(raiz, valor) != null;
+    }
+
+    private NoArvoreB buscarRecursivo(NoArvoreB no, int valor) {
+        if (no == null) {
+            return null;
+        }
+
+        int i = 0;
+
+        // 1. Procura a primeira chave que é maior ou igual ao valor buscado
+        while (i < no.numChaves && valor > no.chaves[i]) {
+            i++;
+        }
+
+        // 2. Verifica se encontrou o valor neste nó
+        if (i < no.numChaves && valor == no.chaves[i]) {
+            return no;
+        }
+
+        if (no.folha) {
+            return null;
+        }
+
+        return buscarRecursivo(no.filhos[i], valor);
+    }
+
     public void imprimir() {
         if (raiz == null) {
             System.out.println("Árvore vazia");
