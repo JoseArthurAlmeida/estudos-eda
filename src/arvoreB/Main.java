@@ -14,5 +14,8 @@ public class Main {
 
         System.out.println("\n--- RESULTADO FINAL ---");
         arvore.imprimir();
+
+        System.out.println("Buscar '10': " + arvore.buscar(10));
+        System.out.println("Buscar '12': " + arvore.buscar(12));
     }
 }
