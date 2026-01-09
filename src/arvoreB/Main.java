@@ -4,7 +4,6 @@ public class Main {
     public static void main(String[] args) {
         ArvoreB arvore = new ArvoreB();
 
-        // Inserindo na ordem do seu exemplo
         int[] valores = {5, 10, 15, 20, 25, 30, 35, 40, 45, 50};
 
         for (int valor : valores) {
@@ -13,7 +12,7 @@ public class Main {
             arvore.imprimir();
         }
 
-        System.out.println("\n--- RESULTADO FINAL VISUAL ---");
+        System.out.println("\n--- RESULTADO FINAL ---");
         arvore.imprimir();
     }
 }

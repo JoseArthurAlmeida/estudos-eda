@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArvoreB {
-    private static final int grauMinimo = 2;
+    private static final int minimoFilho = 2;
+    private static final int maximoChaves = 3;
+
     private NoArvoreB raiz;
 
     public ArvoreB() {
@@ -17,8 +19,8 @@ public class ArvoreB {
             raiz.chaves[0] = valor;
             raiz.numChaves = 1;
         } else {
-            // 2. Se a raiz estiver cheia (3 chaves), precisamos dividir
-            if (raiz.numChaves == 3) {
+            // 2. Se a raiz estiver cheia, precisamos dividir
+            if (raiz.numChaves == maximoChaves) {
                 NoArvoreB novaRaiz = new NoArvoreB(false);
                 novaRaiz.filhos[0] = raiz;
 
@@ -31,7 +33,6 @@ public class ArvoreB {
                 // Insere no filho apropriado
                 inserirNaoCheio(novaRaiz.filhos[i], valor);
 
-                // Atualiza a referência da raiz principal
                 raiz = novaRaiz;
             } else {
                 // 3. Se a raiz tem espaço, insere nela (ou desce recursivamente)
@@ -41,7 +42,7 @@ public class ArvoreB {
     }
 
     private void inserirNaoCheio(NoArvoreB noX, int valor) {
-        int i = noX.numChaves - 1; // Índice do último elemento
+        int i = noX.numChaves - 1;
 
         if (noX.folha) {
             // Se noX é folha, encontramos a posição correta e inserimos
@@ -58,12 +59,11 @@ public class ArvoreB {
             while (i >= 0 && noX.chaves[i] > valor) {
                 i--;
             }
-            i++; // Índice do filho onde vamos descer
+            i++;
 
-            // ESTRATÉGIA PRÓ-ATIVA:
             // Antes de descer, verifica se o filho está cheio (tem 3 chaves).
             // Se estiver, divide ele AGORA para evitar voltar depois.
-            if (noX.filhos[i].numChaves == 3) {
+            if (noX.filhos[i].numChaves == maximoChaves) {
                 dividirFilho(noX, i, noX.filhos[i]);
 
                 // Após dividir, uma chave subiu para 'noX'.
@@ -81,21 +81,20 @@ public class ArvoreB {
     private void dividirFilho(NoArvoreB pai, int i, NoArvoreB filhoCheio) {
         // Cria um novo nó 'irmao' que armazenará as chaves maiores
         NoArvoreB irmao = new NoArvoreB(filhoCheio.folha);
-        irmao.numChaves = grauMinimo - 1; // Para Ordem 4, o novo nó terá 1 chave
+        irmao.numChaves = minimoFilho - 1;
 
-        // --- MOVENDO CHAVES (Direita) ---
-        // O filhoCheio tem chaves [0, 1, 2].
+        // O filhoCheio tem chaves com indices [0, 1, 2].
         // A chave [2] vai para o 'irmao'. A chave [1] sobe. A chave [0] fica.
-        if (grauMinimo - 1 >= 0) System.arraycopy(filhoCheio.chaves, grauMinimo, irmao.chaves, 0, grauMinimo - 1);
+        System.arraycopy(filhoCheio.chaves, minimoFilho, irmao.chaves, 0, minimoFilho - 1);
 
         // --- MOVENDO FILHOS (se não for folha) ---
         // Se filhoCheio tiver filhos, move os filhos da direita para o 'irmao'
         if (!filhoCheio.folha) {
-            if (grauMinimo >= 0) System.arraycopy(filhoCheio.filhos, grauMinimo, irmao.filhos, 0, grauMinimo);
+            if (minimoFilho >= 0) System.arraycopy(filhoCheio.filhos, minimoFilho, irmao.filhos, 0, minimoFilho);
         }
 
         // Atualiza tamanho do filhoCheio (agora só tem a chave da esquerda)
-        filhoCheio.numChaves = grauMinimo - 1;
+        filhoCheio.numChaves = minimoFilho - 1;
 
         // --- INSERINDO O NOVO FILHO NO PAI ---
         // Abre espaço no array de filhos do Pai
@@ -105,17 +104,14 @@ public class ArvoreB {
         pai.filhos[i + 1] = irmao;
 
         // --- SUBINDO A CHAVE MEDIANA PARA O PAI ---
-        // A chave mediana está no índicegrauMinimo-1 (índice 1 para Ordem 4)
-        // Abre espaço nas chaves do Pai
         for (int j = pai.numChaves - 1; j >= i; j--) {
             pai.chaves[j + 1] = pai.chaves[j];
         }
 
-        pai.chaves[i] = filhoCheio.chaves[grauMinimo - 1];
+        pai.chaves[i] = filhoCheio.chaves[minimoFilho - 1];
         pai.numChaves++;
     }
 
-    // --- NOVO MÉTODO DE IMPRESSÃO (VISUAL IGUAL AO SLIDE) ---
     public void imprimir() {
         if (raiz == null) {
             System.out.println("Árvore vazia");
