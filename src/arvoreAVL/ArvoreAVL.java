@@ -263,7 +263,7 @@ public class ArvoreAVL {
     public int getAltura(No no) {
         // Caso base: se o nó for nulo, sua altura é -1.
         if (no == null) {
-            return 0;
+            return -1;
         }
 
         // A altura do nó é 1 + a altura da sua maior sub-árvore (esquerda ou direita).
